@@ -48,11 +48,11 @@ export default function PostDetail() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+      <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-purple-50">
         <div className="space-y-6 text-center">
           <div className="flex justify-center">
             <div className="relative w-16 h-16">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-spin"></div>
+              <div className="absolute inset-0 rounded-full bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 animate-spin"></div>
               <div className="absolute inset-2 rounded-full bg-white"></div>
             </div>
           </div>
@@ -67,14 +67,14 @@ export default function PostDetail() {
 
   if (!post) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-purple-50">
         <div className="bg-white rounded-3xl p-12 shadow-2xl border border-gray-200/50 text-center max-w-md">
           <div className="text-7xl mb-6">🔍</div>
           <h2 className="text-2xl font-bold text-gray-800 mb-3">Không tìm thấy bài viết</h2>
           <p className="text-gray-600 mb-6">Bài viết bạn đang tìm kiếm không tồn tại hoặc đã bị xóa</p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
           >
             ← Về trang chủ
           </Link>
@@ -84,7 +84,7 @@ export default function PostDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 py-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-purple-50/30 py-12 px-4 relative overflow-hidden">
       {/* Decorative background */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-float"></div>
@@ -109,13 +109,13 @@ export default function PostDetail() {
           {/* MAIN CONTENT */}
           <article className="lg:col-span-3 bg-white/80 backdrop-blur-lg p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-200/50 animate-slide-up">
             {/* Category Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-semibold rounded-full mb-6 shadow-lg shadow-blue-500/30">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-blue-500 to-purple-500 text-white text-sm font-semibold rounded-full mb-6 shadow-lg shadow-blue-500/30">
               <span>📚</span>
               <span>{post.category}</span>
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-linear-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight">
               {post.title}
             </h1>
 
@@ -171,12 +171,12 @@ export default function PostDetail() {
             {/* Related Posts */}
             <div className="bg-white/80 backdrop-blur-lg p-6 rounded-3xl shadow-xl border border-gray-200/50 animate-slide-up-delayed sticky top-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-blue-500 to-purple-500 rounded-lg">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
                 </div>
-                <h3 className="font-bold text-xl bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                <h3 className="font-bold text-xl bg-linear-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
                   Bài viết liên quan
                 </h3>
               </div>
@@ -199,7 +199,7 @@ export default function PostDetail() {
                     >
                       <Link
                         to={`/post/${p.id}`}
-                        className="block group hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 p-4 rounded-2xl transition-all duration-300 border border-transparent hover:border-blue-200 hover:shadow-md"
+                        className="block group hover:bg-linear-to-r hover:from-blue-50 hover:to-purple-50 p-4 rounded-2xl transition-all duration-300 border border-transparent hover:border-blue-200 hover:shadow-md"
                       >
                         <div className="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">
                           {p.title}
