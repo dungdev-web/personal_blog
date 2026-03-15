@@ -1,4 +1,4 @@
-# 🚀 Personal Blog Starter
+# Personal Blog Starter
 
 [![GitHub license](https://img.shields.io/badge/license-Unlicensed-blue.svg)](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)
 [![GitHub stars](https://img.shields.io/github/stars/dungdev-web/personal_blog.svg?style=social)](https://github.com/dungdev-web/personal_blog/stargazers)
@@ -10,55 +10,55 @@ A modern, fast, and highly customizable personal blog application built with Rea
 
 ---
 
-## 🌟 Live Demo
+## Live Demo
 
 Experience the blog in action!
 [https://personal-blog-three-orpin.vercel.app](https://personal-blog-three-orpin.vercel.app)
 
 ---
 
-## ✨ Features
+## Features
 
 This project offers a robust foundation for your personal blog, packed with modern web technologies:
 
-*   **⚡️ Blazing Fast Development**: Powered by [Vite](https://vitejs.dev/), ensuring quick refresh times and optimized builds.
-*   **⚛️ Modern Frontend**: Built with [React 19](https://react.dev/), providing a component-based architecture for a scalable and maintainable UI.
-*   **🎨 Beautiful Styling**: Utilizes [Tailwind CSS](https://tailwindcss.com/) for utility-first styling, making it easy to create responsive and visually appealing designs.
-*   **🔥 Backend as a Service**: Integrates with [Firebase](https://firebase.google.com/) (Firestore) for seamless data storage and management of posts and categories.
-*   **✍️ Markdown Support**: Render your blog posts beautifully with Markdown, allowing for rich content creation.
-*   **🔗 Dynamic Routing**: Seamless client-side navigation using [React Router DOM v7](https://reactrouter.com/en/main).
-*   **🧩 Modular Components**: Well-organized `src/components`, `src/pages`, `src/layouts`, and `src/hooks` for better code structure and reusability.
-*   **💡 Custom Hooks**: Efficient data fetching and state management with custom React hooks (`usePosts`, `useCategories`).
-*   **📱 Responsive Design**: Adapts beautifully to various screen sizes, from desktops to mobile devices.
-*   **🚀 Easy Deployment**: Optimized for deployment on platforms like Vercel, Netlify, or your preferred hosting.
+*   **Blazing Fast Development**: Powered by [Vite](https://vitejs.dev/), ensuring quick refresh times and optimized builds.
+*   **Modern Frontend**: Built with [React 19](https://react.dev/), providing a component-based architecture for a scalable and maintainable UI.
+*   **Beautiful Styling**: Utilizes [Tailwind CSS](https://tailwindcss.com/) for utility-first styling, making it easy to create responsive and visually appealing designs.
+*   **Backend as a Service**: Integrates with [Firebase](https://firebase.google.com/) (Firestore) for seamless data storage and management of posts and categories.
+*   **Markdown Support**: Render your blog posts beautifully with Markdown, allowing for rich content creation.
+*   **Dynamic Routing**: Seamless client-side navigation using [React Router DOM v7](https://reactrouter.com/en/main).
+*   **Modular Components**: Well-organized `src/components`, `src/pages`, `src/layouts`, and `src/hooks` for better code structure and reusability.
+*   **Custom Hooks**: Efficient data fetching and state management with custom React hooks (`usePosts`, `useCategories`).
+*   **Responsive Design**: Adapts beautifully to various screen sizes, from desktops to mobile devices.
+*   **Easy Deployment**: Optimized for deployment on platforms like Vercel, Netlify, or your preferred hosting.
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents
 
-*   [🌟 Live Demo](#-live-demo)
-*   [✨ Features](#-features)
-*   [📚 Table of Contents](#-table-of-contents)
-*   [📦 Installation](#-installation)
+*   [Live Demo](#-live-demo)
+*   [Features](#-features)
+*   [Table of Contents](#-table-of-contents)
+*   [Installation](#-installation)
     *   [Prerequisites](#prerequisites)
     *   [Clone the Repository](#clone-the-repository)
     *   [Install Dependencies](#install-dependencies)
     *   [Firebase Setup](#firebase-setup)
-*   [🛠️ Usage](#️-usage)
+*   [Usage](#️-usage)
     *   [Development Server](#development-server)
     *   [Building for Production](#building-for-production)
     *   [Adding Blog Content](#adding-blog-content)
-*   [⚙️ Configuration](#️-configuration)
-*   [📖 API/Data Structure](#-apidata-structure)
+*   [Configuration](#️-configuration)
+*   [API/Data Structure](#-apidata-structure)
     *   [Firebase Integration](#firebase-integration)
     *   [Data Models](#data-models)
-*   [🤝 Contributing](#-contributing)
-*   [📄 License](#-license)
-*   [🙏 Acknowledgments](#-acknowledgments)
+*   [Contributing](#-contributing)
+*   [License](#-license)
+*   [Acknowledgments](#-acknowledgments)
 
 ---
 
-## 📦 Installation
+## Installation
 
 Follow these steps to get your personal blog up and running on your local machine.
 
@@ -219,7 +219,7 @@ Since this project doesn't include an explicit admin panel in the provided file 
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 The main configuration for the project is handled in the following files:
 
