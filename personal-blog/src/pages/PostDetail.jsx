@@ -2,11 +2,13 @@ import { useParams, Link } from "react-router-dom";
 import {
   doc,
   getDoc,
+  updateDoc,
   collection,
   query,
   where,
   limit,
   getDocs,
+  increment,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { useEffect, useState } from "react";
@@ -26,14 +28,19 @@ export default function PostDetail() {
       const currentPost = { id: snap.id, ...snap.data() };
       setPost(currentPost);
 
+      // +1 view — dùng increment để tránh race condition
+      await updateDoc(doc(db, "posts", id), {
+        views: increment(1),
+      });
+
       const q = query(
         collection(db, "posts"),
         where("category", "==", currentPost.category),
+        where("status", "==", "published"),
         limit(5)
       );
 
       const rs = await getDocs(q);
-
       const items = rs.docs
         .map((d) => ({ id: d.id, ...d.data() }))
         .filter((p) => p.id !== currentPost.id)
@@ -120,18 +127,36 @@ export default function PostDetail() {
             </h1>
 
             {/* Meta Info */}
-            <div className="flex items-center gap-4 text-gray-600 mb-8 pb-8 border-b border-gray-200">
+            <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-8 pb-8 border-b border-gray-200">
+              {/* Ngày */}
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span className="font-medium">{post.date?.toDate().toLocaleDateString("vi-VN")}</span>
+                <span className="font-medium">
+                  {post.date?.toDate().toLocaleDateString("vi-VN")}
+                </span>
               </div>
+
+              {/* Thời gian đọc */}
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="font-medium">5 phút đọc</span>
+                <span className="font-medium">
+                  {Math.max(1, Math.ceil((post.content?.split(/\s+/).length || 0) / 200))} phút đọc
+                </span>
+              </div>
+
+              {/* Lượt xem — +1 đã được increment trước đó nên +1 để hiển thị chính xác */}
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <span className="font-medium">
+                  {((post.views ?? 0) + 1).toLocaleString("vi-VN")} lượt xem
+                </span>
               </div>
             </div>
 
@@ -156,7 +181,10 @@ export default function PostDetail() {
                   </svg>
                   Twitter
                 </button>
-                <button className="flex items-center gap-2 px-5 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition-all hover:scale-105 shadow-md">
+                <button
+                  onClick={() => navigator.clipboard.writeText(window.location.href)}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition-all hover:scale-105 shadow-md"
+                >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                   </svg>
@@ -204,11 +232,22 @@ export default function PostDetail() {
                         <div className="text-sm font-semibold text-gray-800 line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">
                           {p.title}
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          {p.date?.toDate().toLocaleDateString("vi-VN")}
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <div className="flex items-center gap-1.5">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            {p.date?.toDate().toLocaleDateString("vi-VN")}
+                          </div>
+                          {p.views > 0 && (
+                            <div className="flex items-center gap-1">
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              {p.views.toLocaleString("vi-VN")}
+                            </div>
+                          )}
                         </div>
                       </Link>
                     </li>
@@ -222,84 +261,30 @@ export default function PostDetail() {
 
       <style>{`
         @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(30px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes slideUpDelayed {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
         @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
+          from { opacity: 0; transform: translateX(-20px); }
+          to   { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
-
         @keyframes float {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          50% {
-            transform: translateY(-20px) translateX(10px);
-          }
+          0%, 100% { transform: translateY(0) translateX(0); }
+          50%       { transform: translateY(-20px) translateX(10px); }
         }
-
         @keyframes floatDelayed {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          50% {
-            transform: translateY(-30px) translateX(-15px);
-          }
+          0%, 100% { transform: translateY(0) translateX(0); }
+          50%       { transform: translateY(-30px) translateX(-15px); }
         }
-
-        .animate-slide-up {
-          animation: slideUp 0.8s ease-out;
-        }
-
-        .animate-slide-up-delayed {
-          animation: slideUpDelayed 0.8s ease-out 0.2s backwards;
-        }
-
-        .animate-fade-in {
-          animation: fadeIn 0.6s ease-out;
-        }
-
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-float-delayed {
-          animation: floatDelayed 8s ease-in-out infinite;
-        }
+        .animate-slide-up          { animation: slideUp 0.8s ease-out; }
+        .animate-slide-up-delayed  { animation: slideUp 0.8s ease-out 0.2s backwards; }
+        .animate-fade-in           { animation: fadeIn 0.6s ease-out; }
+        .animate-float             { animation: float 6s ease-in-out infinite; }
+        .animate-float-delayed     { animation: floatDelayed 8s ease-in-out infinite; }
       `}</style>
     </div>
   );

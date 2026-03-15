@@ -15,12 +15,14 @@ export function usePosts(category = "all") {
       if (category && category !== "all") {
         q = query(
           collection(db, "posts"),
+          where("status", "==", "published"),
           where("category", "==", category),
           orderBy("date", "desc")
         )
       } else {
         q = query(
           collection(db, "posts"),
+          where("status", "==", "published"),
           orderBy("date", "desc")
         )
       }

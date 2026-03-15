@@ -1,8 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import MainLayout from "./layouts/MainLayout"
-import Home from "./pages/Home"
-import About from "./pages/About"
-import PostDetail from "./pages/PostDetail"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import PostDetail from "./pages/PostDetail";
+import AdminPage from "./pages/AdminPage"
 
 export default function App() {
   return (
@@ -13,7 +14,8 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/post/:id" element={<PostDetail />} />
         </Route>
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
