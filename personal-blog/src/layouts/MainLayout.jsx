@@ -6,7 +6,7 @@ export default function MainLayout() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       <Header />
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main >
         <Outlet />
       </main>
       <Footer />

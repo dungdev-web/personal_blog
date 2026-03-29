@@ -1,6 +1,6 @@
 export default function About() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-purple-50/30">
+    <div className="min-h-screen bg-[#f8f6f1]">
       {/* Decorative Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-96 h-96 bg-blue-200/15 rounded-full blur-3xl"></div>

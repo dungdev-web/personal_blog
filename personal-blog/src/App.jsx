@@ -3,7 +3,7 @@ import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import PostDetail from "./pages/PostDetail";
-import AdminPage from "./pages/AdminPage"
+import AdminPage from "./pages/admin/AdminPage"
 
 export default function App() {
   return (
