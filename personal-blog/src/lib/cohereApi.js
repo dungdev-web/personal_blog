@@ -1,4 +1,4 @@
-const COHERE_API_KEY = "qzUViCkMeSQCEm66zTS3t87bkCTr9auLMyAkHXsz"
+const COHERE_API_KEY = import.meta.env.COHERE_API_KEY
 
 async function cohereChat(message, preamble = "") {
   const res = await fetch("https://api.cohere.com/v1/chat", {
