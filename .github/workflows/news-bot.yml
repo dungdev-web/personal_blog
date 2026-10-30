@@ -1,0 +1,31 @@
+name: News bot
+on:
+  schedule:
+    - cron: "0 1 * * *" # 08:00 giờ VN mỗi ngày
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/news-bot.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+      - name: Heartbeat (giữ workflow không bị GitHub tắt)
+        run: |
+          date -u > .bot-heartbeat
+          git config user.name "news-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add .bot-heartbeat
+          git commit -m "chore: heartbeat" || true
+          git push
