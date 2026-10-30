@@ -93,6 +93,7 @@ async function summarizeVi(item) {
   try {
     const res = await fetch("https://api.cohere.com/v2/chat", {
       method: "POST",
+      signal: AbortSignal.timeout(20000),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${key}`,
