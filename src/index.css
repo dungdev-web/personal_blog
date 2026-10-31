@@ -1,1 +1,57 @@
 @import "tailwindcss";
+
+/* Plus Jakarta Sans có đủ glyph tiếng Việt (ề, ầ, ồ...), thay cho Georgia bị lỗi dấu */
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fff;
+  color: #1e293b;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Hiệu ứng vào trang (hero) */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.animate-rise    { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.animate-fade-in { animation: rise 0.6s ease-out both; } /* giữ tên cũ cho trang About/Admin */
+
+/* Hiệu ứng khi cuộn tới: thẻ nổi lên, ảnh từ từ "lắng" về đúng cỡ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.65s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.65s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+.reveal-img {
+  transform: scale(1.08);
+  transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1), scale 0.6s ease;
+}
+.reveal[data-shown="true"] .reveal-img {
+  transform: scale(1);
+}
+
+/* Người dùng tắt chuyển động thì hiện luôn, không animation */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal, .reveal-img, .animate-rise, .animate-fade-in {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

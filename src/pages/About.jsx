@@ -1,92 +1,60 @@
+import { Link } from "react-router-dom"
+import { Lightbulb, Layers, RefreshCw } from "lucide-react"
+import Reveal from "../components/Reveal"
+
+const FEATURES = [
+  { icon: Layers, title: "Kiến thức đa dạng", text: "Từ frontend, backend đến devops và cloud computing." },
+  { icon: Lightbulb, title: "Thực tiễn và ứng dụng", text: "Các bài viết dựa trên các bài báo và YouTube." },
+  { icon: RefreshCw, title: "Cập nhật liên tục", text: "Theo dõi xu hướng công nghệ mới nhất." },
+]
+
 export default function About() {
   return (
-    <div className="min-h-screen bg-[#f8f6f1]">
-      {/* Decorative Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-10 w-96 h-96 bg-blue-200/15 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-purple-200/15 rounded-full blur-3xl"></div>
-      </div>
+    <div className="mx-auto max-w-4xl px-5 pb-24 pt-14 sm:px-8 sm:pt-20">
+      <span className="animate-rise inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+        Giới thiệu
+      </span>
+      <h1
+        className="animate-rise mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-6xl"
+        style={{ animationDelay: "80ms" }}
+      >
+        Dev Blog
+      </h1>
+      <p
+        className="animate-rise mt-6 max-w-2xl text-xl leading-9 text-slate-600"
+        style={{ animationDelay: "160ms" }}
+      >
+        Dev Blog là nơi chia sẻ kiến thức lập trình từ cơ bản đến nâng cao, giúp bạn phát triển kỹ năng và mở rộng tầm nhìn trong thế giới công nghệ.
+      </p>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-20">
-        {/* Header */}
-        <div className="mb-12 animate-fade-in">
-          <div className="inline-block mb-4">
-            <span className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium ">
-              About Us
+      <div className="mt-14 grid gap-6 md:grid-cols-3">
+        {FEATURES.map(({ icon: Icon, title, text }, i) => (
+          <Reveal key={title} delay={i * 90} className="rounded-3xl border border-slate-200 p-7 transition-colors hover:border-indigo-300">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+              <Icon size={22} />
             </span>
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-black">
-            Dev Blog
-          </h1>
-          <div className="w-20 h-1 bg-black rounded-full mb-8"></div>
-        </div>
-
-        {/* Main Card */}
-        <div className="backdrop-blur-md bg-white/80 border border-blue-200 rounded-2xl p-8 md:p-12 shadow-lg hover:shadow-xl transition-shadow duration-300 mb-12">
-          <p className="text-xl text-gray-700 leading-relaxed mb-8">
-            Dev Blog là nơi <span className="text-black font-semibold">chia sẻ kiến thức lập trình</span> từ cơ bản đến nâng cao, giúp bạn phát triển kỹ năng và mở rộng tầm nhìn trong thế giới công nghệ.
-          </p>
-
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 bg-yellow-50 rounded-xl border border-yellow-200 hover:border-yellow-400 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-2xl">🎨</span>
-              </div>
-              <h3 className="font-semibold text-orange-700 mb-2">Kiến Thức Đa Dạng</h3>
-              <p className="text-sm text-gray-700">Từ frontend, backend, đến devops và cloud computing</p>
-            </div>
-
-            <div className="p-6 bg-orange-50 rounded-xl border border-orange-200 hover:border-orange-400 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-2xl">💡</span>
-              </div>
-              <h3 className="font-semibold text-orange-700 mb-2">Thực Tiễn & Ứng Dụng</h3>
-              <p className="text-sm text-gray-700">Các bài viết dựa trên các bài báo và youtube</p>
-            </div>
-
-            <div className="p-6 bg-pink-50 rounded-xl border border-pink-200 hover:border-pink-400 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-2xl">🚀</span>
-              </div>
-              <h3 className="font-semibold text-orange-700 mb-2">Cập Nhật Liên Tục</h3>
-              <p className="text-sm text-gray-700">Theo dõi xu hướng công nghệ mới nhất</p>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="text-center">
-          <p className="text-gray-700 mb-6 text-lg">Bắt đầu hành trình học tập của bạn ngay hôm nay</p>
-          <div className="flex gap-4 justify-center">
-            <a href="/">
-            <button className="px-8 py-3 bg-linear-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
-              Đọc Bài Viết
-            </button>
-            </a>
-            <button className="px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg border-2 border-blue-300 hover:border-gradient-to-r hover:border-purple-600 hover:bg-blue-50 transition-all duration-300">
-              Liên Hệ
-            </button>
-          </div>
-        </div>
+            <h3 className="mt-5 text-lg font-bold text-slate-900">{title}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-500">{text}</p>
+          </Reveal>
+        ))}
       </div>
 
-      <style jsx>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out;
-        }
-      `}</style>
+      <Reveal className="mt-10 rounded-3xl bg-slate-50 p-7 sm:p-9">
+        <h2 className="text-lg font-bold text-slate-900">Về các bài tổng hợp tự động</h2>
+        <p className="mt-2 leading-7 text-slate-600">
+          Mỗi ngày, một bot thu thập tin từ Hacker News, các bản phát hành của React, Next.js, Node.js và danh sách việc làm remote. Phần tóm tắt tiếng Việt do AI viết lại từ đúng đoạn mô tả của nguồn, kèm link bài gốc để bạn đối chiếu.
+        </p>
+      </Reveal>
+
+      <Reveal className="mt-16 text-center">
+        <p className="text-lg text-slate-600">Bắt đầu hành trình học tập của bạn ngay hôm nay</p>
+        <Link
+          to="/"
+          className="mt-6 inline-flex rounded-full bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+        >
+          Đọc bài viết
+        </Link>
+      </Reveal>
     </div>
   )
 }

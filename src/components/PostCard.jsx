@@ -1,105 +1,79 @@
-import { Calendar } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom"
+import { ArrowUpRight } from "lucide-react"
+import PostThumb from "./PostThumb"
+import { formatDate, initials, readMinutes } from "../lib/postUtils"
 
-export default function PostCard({ post, size = "md" }) {
-  const nav = useNavigate();
+export function CategoryChip({ children, solid = false }) {
+  if (!children) return null
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${
+        solid ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-700"
+      }`}
+    >
+      {children}
+    </span>
+  )
+}
 
-  const formatDate = (ts) => {
-    if (!ts) return "";
-    if (ts.seconds) {
-      return new Date(ts.seconds * 1000).toLocaleDateString("vi-VN");
-    }
-    return ts;
-  };
-
-  const getInitials = (name = "") =>
-    name
-      .split(" ")
-      .map((w) => w[0])
-      .slice(-2)
-      .join("")
-      .toUpperCase();
-
-  const heightMap = { hero: "h-85", md: "h-75", sm: "h-44" };
-  const titleSizeMap = { hero: "text-xl", md: "text-base", sm: "text-sm" };
+export default function PostCard({ post, variant = "default", categoryLabel }) {
+  const featured = variant === "featured"
+  const author = post.author || "Dev Blog"
 
   return (
-    <div
-      onClick={() => nav(`/post/${post.id}`)}
-      className="group rounded-xl overflow-hidden border border-gray-200/60 cursor-pointer bg-white
-                 hover:-translate-y-1 transition-transform duration-200 h-auto"
+    <Link
+      to={`/post/${post.id}`}
+      className={`group rounded-3xl outline-offset-8 focus-visible:outline-2 focus-visible:outline-indigo-600 ${
+        featured ? "grid items-center gap-6 md:grid-cols-5 md:gap-8" : "flex h-full flex-col"
+      }`}
     >
-      {/* Image + Overlay */}
-      <div className={`relative w-full overflow-hidden ${heightMap[size]}`}>
-        {post.thumbnailUrl ? (
-          <img
-            src={
-              post.thumbnailUrl?.startsWith("http")
-                ? post.thumbnailUrl
-                : `/blog/${post.thumbnailUrl}`
-            }
-            alt={post.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600" />
+      <PostThumb
+        post={post}
+        eager={featured}
+        className={`aspect-[16/10] rounded-3xl ${featured ? "md:col-span-3" : ""}`}
+      />
+
+      <div className={featured ? "md:col-span-2" : "mt-4 flex flex-1 flex-col"}>
+        <div className="flex flex-wrap items-center gap-2">
+          {featured && <CategoryChip solid>Mới nhất</CategoryChip>}
+          <CategoryChip>{categoryLabel || post.category}</CategoryChip>
+        </div>
+
+        <h2
+          className={`mt-3 font-extrabold tracking-tight text-slate-900 transition-colors group-hover:text-indigo-700 ${
+            featured ? "line-clamp-3 text-2xl leading-tight sm:text-3xl" : "line-clamp-2 text-lg leading-snug"
+          }`}
+        >
+          {post.title}
+        </h2>
+
+        {post.excerpt && (
+          <p
+            className={`mt-2 text-slate-500 ${
+              featured ? "line-clamp-4 text-base leading-7" : "line-clamp-2 text-sm leading-6"
+            }`}
+          >
+            {post.excerpt}
+          </p>
         )}
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/80" />
-
-        {/* Content on image */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          {/* Category badge */}
-          {post.category && (
-            <span
-              className="inline-block text-[11px] font-medium uppercase tracking-wide
-                             px-2.5 py-0.5 rounded-full bg-white/20 text-white/90 mb-2"
-            >
-              {post.category}
-            </span>
-          )}
-
-          {/* Title */}
-          <h2
-            className={`font-semibold leading-snug text-white line-clamp-2 ${titleSizeMap[size]}`}
-          >
-            {post.title}
-          </h2>
-
-          {/* Excerpt — chỉ hiện ở hero & md */}
-          {size !== "sm" && post.excerpt && (
-            <p className="text-white/70 text-xs mt-1 line-clamp-2 leading-relaxed">
-              {post.excerpt}
+        <div className={`flex items-center gap-3 ${featured ? "mt-6" : "mt-auto pt-5"}`}>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">
+            {initials(author)}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-slate-800">{author}</p>
+            <p className="flex gap-3 text-xs text-slate-400">
+              <span>{readMinutes(post)} phút đọc</span>
+              <span>{formatDate(post.date)}</span>
             </p>
-          )}
-
-          {/* Meta */}
-          <div className="flex items-center gap-2 mt-2.5 text-white/55 text-[11px]">
-            {/* Avatar */}
-            {post.author && (
-              <>
-                <div
-                  className="w-5 h-5 rounded-full bg-white/25 border border-white/30
-                                flex items-center justify-center text-[9px] font-medium text-white shrink-0"
-                >
-                  {getInitials(post.author)}
-                </div>
-                <span>{post.author}</span>
-                <span className="w-0.5 h-0.5 rounded-full bg-white/40" />
-              </>
-            )}
-            <Calendar size={11} className="shrink-0" />
-            <span>{formatDate(post.date)}</span>
-            {post.readTime && (
-              <>
-                <span className="w-0.5 h-0.5 rounded-full bg-white/40" />
-                <span>{post.readTime} phút đọc</span>
-              </>
-            )}
           </div>
+          <ArrowUpRight
+            className="h-5 w-5 shrink-0 text-slate-400 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-indigo-600"
+            aria-hidden
+          />
         </div>
       </div>
-    </div>
-  );
+    </Link>
+  )
 }

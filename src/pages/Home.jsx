@@ -1,184 +1,193 @@
-import { useState, useEffect } from "react";
-import { usePosts } from "../hooks/usePosts";
-import PostCard from "../components/PostCard";
-import { fetchCategories } from "../hooks/useCategories";
+import { useEffect, useMemo, useState } from "react"
+import { Search, X } from "lucide-react"
+import PostCard from "../components/PostCard"
+import Reveal from "../components/Reveal"
+import { usePosts } from "../hooks/usePosts"
+import { fetchCategories } from "../hooks/useCategories"
+import { normalize, tagList } from "../lib/postUtils"
+
+function Skeleton({ featured = false }) {
+  return (
+    <div className={`animate-pulse ${featured ? "sm:col-span-2" : ""}`}>
+      <div className="aspect-[16/10] rounded-3xl bg-slate-100" />
+      <div className="mt-4 h-4 w-20 rounded-full bg-slate-100" />
+      <div className="mt-3 h-5 w-4/5 rounded bg-slate-100" />
+      <div className="mt-2 h-4 w-3/5 rounded bg-slate-100" />
+    </div>
+  )
+}
 
 export default function Home() {
-  const [currentCat, setCurrentCat] = useState("all");
-  const [categories, setCategories] = useState([]);
+  const [currentCat, setCurrentCat] = useState("all")
+  const [categories, setCategories] = useState([])
+  const [q, setQ] = useState("")
 
-  const { posts, loading } = usePosts(currentCat);
+  const { posts, loading, loadingMore, hasMore, loadMore, error } = usePosts(currentCat)
 
   useEffect(() => {
-    fetchCategories().then(setCategories);
-  }, []);
+    fetchCategories().then(setCategories).catch(() => {})
+  }, [])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f8f6f1]">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-8 h-8 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-gray-500 tracking-widest uppercase">Đang tải</p>
-      </div>
-    </div>
-    );
-  }
+  const catName = useMemo(
+    () => Object.fromEntries(categories.map((c) => [c.slug, c.name])),
+    [categories],
+  )
+
+  const searching = q.trim().length > 0
+  const filtered = useMemo(() => {
+    const needle = normalize(q.trim())
+    if (!needle) return posts
+    return posts.filter((p) =>
+      normalize(`${p.title} ${p.excerpt ?? ""} ${tagList(p.tags).join(" ")}`).includes(needle),
+    )
+  }, [posts, q])
+
+  const featured = !searching ? filtered[0] : null
+  const rest = featured ? filtered.slice(1) : filtered
+
+  const catItems = [{ id: "all", slug: "all", name: "Tất cả" }, ...categories]
 
   return (
-    <div className="min-h-screen bg-[#f8f6f1] py-16 px-4 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl animate-float-delayed"></div>
-      </div>
+    <div className="mx-auto max-w-6xl px-5 pb-24 sm:px-8">
+      {/* Hero */}
+      <section className="mx-auto max-w-2xl pt-12 text-center sm:pt-16">
+        <span className="animate-rise inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+          Bài viết và bản tin công nghệ
+        </span>
+        <h1
+          className="animate-rise mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl"
+          style={{ animationDelay: "80ms" }}
+        >
+          Đọc nhanh, hiểu đủ về công nghệ
+        </h1>
+        <p
+          className="animate-rise mt-4 text-lg leading-8 text-slate-500"
+          style={{ animationDelay: "160ms" }}
+        >
+          Hướng dẫn, ghi chú và tin mới được tóm tắt bằng tiếng Việt.
+        </p>
+      </section>
 
-      <div className="mx-auto relative z-10">
-        {/* Header Section */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className=" h-14 text-4xl md:text-5xl font-bold bg-linear-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-            Khám Phá Nội Dung
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Tìm kiếm bài viết phù hợp với sở thích của bạn
-          </p>
-        </div>
-
-        {/* Category Filter */}
-        <div className="mb-10">
-          <div className="flex justify-center">
-            <div className="flex items-center gap-1 p-1 bg-white border border-gray-200 rounded-xl shadow-sm flex-wrap">
+      <div className="mt-12 grid gap-10 sm:mt-16 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
+        {/* Sidebar */}
+        <aside className="animate-rise lg:sticky lg:top-24 lg:self-start" style={{ animationDelay: "240ms" }}>
+          <label htmlFor="search" className="mb-2 block text-xs font-semibold text-slate-500">
+            Tìm bài viết
+          </label>
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              id="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Nhập từ khóa..."
+              className="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-10 pr-10 text-sm text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100"
+            />
+            {q && (
               <button
-                onClick={() => setCurrentCat("all")}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                  currentCat === "all"
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                type="button"
+                aria-label="Xóa từ khóa"
+                onClick={() => setQ("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          <p className="mb-3 mt-8 hidden text-xs font-semibold text-indigo-700 lg:block">Danh mục</p>
+
+          {/* Mobile: cuộn ngang */}
+          <div className="-mx-5 mt-5 flex gap-2 overflow-x-auto px-5 pb-1 lg:hidden [scrollbar-width:none]">
+            {catItems.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setCurrentCat(c.slug)}
+                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                  currentCat === c.slug
+                    ? "bg-slate-900 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                Tất cả
+                {c.name}
               </button>
+            ))}
+          </div>
 
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setCurrentCat(cat.slug)}
-                  className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                    currentCat === cat.slug
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
-                  }`}
-                >
-                  {cat.name}
-                </button>
+          {/* Desktop: danh sách có vạch bên trái */}
+          <nav className="hidden border-l border-slate-200 lg:block" aria-label="Danh mục">
+            {catItems.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setCurrentCat(c.slug)}
+                aria-current={currentCat === c.slug}
+                className={`-ml-px block w-full border-l-2 py-2 pl-4 text-left text-sm transition-colors ${
+                  currentCat === c.slug
+                    ? "border-indigo-600 font-bold text-slate-900"
+                    : "border-transparent font-medium text-slate-500 hover:border-slate-300 hover:text-slate-900"
+                }`}
+              >
+                {c.name}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Kết quả */}
+        <section aria-live="polite">
+          {loading ? (
+            <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2">
+              <Skeleton featured />
+              <Skeleton />
+              <Skeleton />
+            </div>
+          ) : error ? (
+            <div className="rounded-3xl border border-slate-200 p-10 text-center">
+              <p className="font-bold text-slate-900">Không tải được bài viết</p>
+              <p className="mt-2 text-sm text-slate-500">Kiểm tra kết nối mạng rồi tải lại trang.</p>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-slate-300 p-10 text-center">
+              <p className="font-bold text-slate-900">
+                {searching ? "Không có bài nào khớp từ khóa" : "Chưa có bài viết"}
+              </p>
+              <p className="mt-2 text-sm text-slate-500">
+                {searching
+                  ? "Thử từ khóa khác, hoặc bấm “Xem thêm” để tìm trong nhiều bài hơn."
+                  : "Thử chọn danh mục khác hoặc quay lại sau."}
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2">
+              {featured && (
+                <Reveal className="sm:col-span-2">
+                  <PostCard post={featured} variant="featured" categoryLabel={catName[featured.category]} />
+                </Reveal>
+              )}
+              {rest.map((p, i) => (
+                <Reveal key={p.id} delay={(i % 2) * 90}>
+                  <PostCard post={p} categoryLabel={catName[p.category]} />
+                </Reveal>
               ))}
             </div>
-          </div>
-        </div>
+          )}
 
-        {/* Posts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {posts.map((p, idx) => (
-            <div key={p.id} className={idx === 0 ? "md:col-span-2" : ""}>
-              <PostCard post={p} size={idx === 0 ? "hero" : "md"} />
+          {!loading && !error && hasMore && (
+            <div className="mt-14 text-center">
+              {searching && (
+                <p className="mb-3 text-xs text-slate-400">Từ khóa chỉ được tìm trong các bài đã tải.</p>
+              )}
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="rounded-full border border-slate-200 px-7 py-3 text-sm font-semibold text-slate-800 transition hover:border-indigo-600 hover:text-indigo-700 disabled:opacity-60"
+              >
+                {loadingMore ? "Đang tải..." : "Xem thêm bài viết"}
+              </button>
             </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {posts.length === 0 && !loading && (
-          <div className="flex flex-col items-center justify-center min-h-96 text-center animate-fade-in">
-            <div className="bg-linear-to-br from-blue-50 to-purple-50 rounded-3xl p-12 shadow-lg border border-gray-200/50">
-              <div className="text-7xl mb-6 animate-bounce-slow">📭</div>
-              <p className="text-gray-700 text-xl font-semibold mb-2">
-                Chưa có bài viết
-              </p>
-              <p className="text-gray-500">
-                Hãy thử chọn danh mục khác hoặc quay lại sau
-              </p>
-            </div>
-          </div>
-        )}
+          )}
+        </section>
       </div>
-
-      <style>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          50% {
-            transform: translateY(-20px) translateX(10px);
-          }
-        }
-
-        @keyframes floatDelayed {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          50% {
-            transform: translateY(-30px) translateX(-15px);
-          }
-        }
-
-        @keyframes bounceSlow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fadeIn 0.8s ease-out;
-        }
-
-        .animate-fade-in-up {
-          animation: fadeInUp 0.8s ease-out;
-        }
-
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-float-delayed {
-          animation: floatDelayed 8s ease-in-out infinite;
-        }
-
-        .animate-bounce-slow {
-          animation: bounceSlow 2s ease-in-out infinite;
-        }
-      `}</style>
     </div>
-  );
+  )
 }
